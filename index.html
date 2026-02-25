@@ -32,7 +32,6 @@
   .header-right { font-size: 12px; color: var(--text-secondary); }
   #lastUpdated { font-weight: 500; color: var(--accent); }
 
-  /* Layout */
   .main { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
 
   /* Filter */
@@ -47,33 +46,43 @@
 
   /* Stats */
   .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; position: relative; overflow: hidden; }
+  .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+  .stat-card.c1::before { background: var(--accent); }
+  .stat-card.c2::before { background: linear-gradient(90deg, #833ab4, #fd1d1d, #fcb045); }
+  .stat-card.c3::before { background: #30cfd0; }
+  .stat-card.c4::before { background: #43e97b; }
   .stat-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
   .stat-value { font-size: 26px; font-weight: 600; line-height: 1; }
-  .stat-value.accent { color: var(--accent); }
+  .stat-value.c1 { color: var(--accent); }
+  .stat-value.c2 { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-value.c3 { color: #30cfd0; }
+  .stat-value.c4 { color: #43e97b; }
   .stat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 5px; }
 
   /* Charts */
   .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
   .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 22px 18px; }
   .chart-card.wide { grid-column: 1 / -1; }
+  .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
   .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-  .chart-sub { font-size: 11px; color: var(--text-secondary); margin-bottom: 16px; }
-  .chart-wrap { position: relative; height: 240px; }
+  .chart-sub { font-size: 11px; color: var(--text-secondary); }
+  .year-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .year-tab { font-family: 'Kanit', sans-serif; font-size: 12px; font-weight: 400; border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+  .year-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .year-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500; }
+  .chart-wrap { position: relative; height: 260px; }
   .chart-wrap.tall { height: 300px; }
 
   /* Table */
   .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 16px; }
   .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
-  .table-header-left { display: flex; flex-direction: column; gap: 2px; }
   .table-wrap { overflow-x: auto; }
-
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.7px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   th.sortable { cursor: pointer; user-select: none; }
   th.sortable:hover { color: var(--accent); }
   th.sort-active { color: var(--accent); }
-  .sort-icon { margin-left: 4px; font-size: 10px; }
   td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-weight: 300; vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #f9f9f9; }
@@ -119,7 +128,6 @@
 
 <main class="main">
 
-  <!-- Filters -->
   <div class="filter-bar">
     <div class="filter-group">
       <label>ปี (Year)</label>
@@ -148,35 +156,38 @@
     <button class="btn-refresh" onclick="fetchData()" id="btnRefresh">↻ รีเฟรชข้อมูล</button>
   </div>
 
-  <!-- Stats -->
   <div class="stats-row">
-    <div class="stat-card">
+    <div class="stat-card c1">
       <div class="stat-label">จำนวนงานทั้งหมด</div>
-      <div class="stat-value accent" id="statTotal">—</div>
+      <div class="stat-value c1" id="statTotal">—</div>
       <div class="stat-sub">รายการ</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card c2">
       <div class="stat-label">รวมชั่วโมงปฏิบัติงาน</div>
-      <div class="stat-value" id="statHours">—</div>
+      <div class="stat-value c2" id="statHours">—</div>
       <div class="stat-sub">ชั่วโมง</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card c3">
       <div class="stat-label">เฉลี่ยต่องาน</div>
-      <div class="stat-value" id="statAvg">—</div>
+      <div class="stat-value c3" id="statAvg">—</div>
       <div class="stat-sub">ชั่วโมง / รายการ</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card c4">
       <div class="stat-label">จำนวนบุคลากร</div>
-      <div class="stat-value" id="statPeople">—</div>
+      <div class="stat-value c4" id="statPeople">—</div>
       <div class="stat-sub">คน</div>
     </div>
   </div>
 
-  <!-- Charts -->
   <div class="charts-grid">
     <div class="chart-card wide">
-      <div class="chart-title">ชั่วโมงการปฏิบัติงานรายเดือน</div>
-      <div class="chart-sub">จำนวนชั่วโมงสะสมแยกตามเดือน</div>
+      <div class="chart-header">
+        <div>
+          <div class="chart-title">ชั่วโมงการปฏิบัติงานรายเดือน</div>
+          <div class="chart-sub">แสดงครบทุกเดือน ม.ค. – ธ.ค.</div>
+        </div>
+        <div class="year-tabs" id="yearTabs"></div>
+      </div>
       <div class="chart-wrap tall"><canvas id="chartMonthly"></canvas></div>
     </div>
     <div class="chart-card">
@@ -191,10 +202,9 @@
     </div>
   </div>
 
-  <!-- Table -->
   <div class="table-card">
     <div class="table-header">
-      <div class="table-header-left">
+      <div>
         <div class="chart-title">รายการงานที่ได้รับมอบหมาย</div>
         <div class="chart-sub" id="tableCount">—</div>
       </div>
@@ -204,9 +214,7 @@
         <thead>
           <tr>
             <th>#</th>
-            <th class="sortable sort-active" id="thDate" onclick="toggleSort()">
-              วันที่ <span class="sort-icon" id="sortIcon">↑</span>
-            </th>
+            <th class="sortable sort-active" onclick="toggleSort()">วันที่ <span id="sortIcon">↑</span></th>
             <th>ชื่อ-สกุล</th>
             <th>รายละเอียดงาน</th>
             <th>ชั่วโมง</th>
@@ -231,8 +239,9 @@ const PER_PAGE   = 10;
 let rawData      = [];
 let filteredData = [];
 let currentPage  = 1;
-let sortDir      = 'asc'; // 'asc' = เก่า→ใหม่, 'desc' = ใหม่→เก่า
+let sortDir      = 'asc';
 let charts       = {};
+let activeYear   = null;
 
 const MONTH_NAMES = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const PALETTE     = ['#0095f6','#fd1d1d','#fcb045','#833ab4','#30cfd0','#667eea','#f093fb','#4facfe','#43e97b','#fa709a'];
@@ -242,29 +251,19 @@ const CFONT       = { family: 'Kanit', size: 12, weight: '300' };
 function parseDate(raw) {
   if (!raw) return null;
   const s = String(raw).trim();
-
-  // gviz: Date(2024,0,15)
   const gv = s.match(/Date\((\d+),(\d+),(\d+)\)/);
   if (gv) return new Date(+gv[1], +gv[2], +gv[3]);
-
-  // DD/MM/YYYY (รองรับ พ.ศ.)
   const sl = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
   if (sl) { let y = +sl[3]; if (y > 2500) y -= 543; return new Date(y, +sl[2]-1, +sl[1]); }
-
-  // YYYY-MM-DD
   const is = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
   if (is) { let y = +is[1]; if (y > 2500) y -= 543; return new Date(y, +is[2]-1, +is[3]); }
-
   const d = new Date(s);
   return isNaN(d) ? null : d;
 }
 
 function formatDateTH(date) {
   if (!date) return '—';
-  const d = date.getDate();
-  const m = MONTH_NAMES[date.getMonth()];
-  const y = date.getFullYear() + 543;
-  return `${d} ${m} ${y}`;
+  return `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()+543}`;
 }
 
 // ── FETCH ────────────────────────────────────────────────
@@ -276,9 +275,9 @@ async function fetchData() {
     const json = JSON.parse(text.replace(/^[^\(]*\(/, '').replace(/\);\s*$/, ''));
 
     rawData = json.table.rows.slice(1).map(r => {
-      const c       = r.c;
-      const dcell   = c[3];
-      let dateRaw   = '', dateObj = null;
+      const c     = r.c;
+      const dcell = c[3];
+      let dateRaw = '', dateObj = null;
       if (dcell) {
         if (typeof dcell.v === 'string') {
           dateObj = parseDate(dcell.v) || parseDate(dcell.f);
@@ -289,13 +288,7 @@ async function fetchData() {
         }
       }
       const hours = parseFloat(String(c[5]?.v ?? c[5]?.f ?? 0).replace(/[^\d.]/g, '')) || 0;
-      return {
-        name:    c[1]?.v || '',
-        detail:  c[2]?.v || '',
-        dateRaw,
-        date:    dateObj,
-        hours,
-      };
+      return { name: c[1]?.v || '', detail: c[2]?.v || '', dateRaw, date: dateObj, hours };
     }).filter(r => r.name);
 
     populateFilters();
@@ -320,7 +313,6 @@ function populateFilters() {
     if (String(y) === curY) o.selected = true;
     selY.appendChild(o);
   });
-
   const people = [...new Set(rawData.map(r => r.name).filter(Boolean))].sort();
   const selP   = document.getElementById('filterPerson');
   const curP   = selP.value;
@@ -336,14 +328,12 @@ function applyFilters() {
   const year   = document.getElementById('filterYear').value;
   const month  = document.getElementById('filterMonth').value;
   const person = document.getElementById('filterPerson').value;
-
   filteredData = rawData.filter(r => {
-    if (year   !== 'all' && r.date?.getFullYear() !== +year)    return false;
-    if (month  !== 'all' && r.date?.getMonth()+1  !== +month)   return false;
-    if (person !== 'all' && r.name !== person)                  return false;
+    if (year   !== 'all' && r.date?.getFullYear() !== +year)  return false;
+    if (month  !== 'all' && r.date?.getMonth()+1  !== +month) return false;
+    if (person !== 'all' && r.name !== person)                return false;
     return true;
   });
-
   sortData();
 }
 
@@ -368,67 +358,155 @@ function sortData() {
 
 // ── STATS ────────────────────────────────────────────────
 function updateStats(data) {
-  const total  = data.length;
-  const hours  = data.reduce((s,r) => s + r.hours, 0);
+  const total = data.length;
+  const hours = data.reduce((s, r) => s + r.hours, 0);
   document.getElementById('statTotal').textContent  = total.toLocaleString('th-TH');
-  document.getElementById('statHours').textContent  = hours.toLocaleString('th-TH', {minimumFractionDigits:1,maximumFractionDigits:1});
+  document.getElementById('statHours').textContent  = hours.toLocaleString('th-TH', {minimumFractionDigits:1, maximumFractionDigits:1});
   document.getElementById('statAvg').textContent    = total ? (hours/total).toFixed(1) : '0';
-  document.getElementById('statPeople').textContent = new Set(data.map(r=>r.name)).size;
+  document.getElementById('statPeople').textContent = new Set(data.map(r => r.name)).size;
 }
 
-// ── CHARTS ───────────────────────────────────────────────
-function updateCharts(data) {
-  // Monthly bar
-  const mmap = {};
-  data.forEach(r => {
-    if (!r.date) return;
-    const k = `${r.date.getFullYear()}-${String(r.date.getMonth()+1).padStart(2,'0')}`;
-    mmap[k] = (mmap[k]||0) + r.hours;
-  });
-  const mkeys = Object.keys(mmap).sort();
-  destroyChart('monthly');
-  if (mkeys.length) {
-    charts.monthly = new Chart(document.getElementById('chartMonthly'), {
-      type: 'bar',
-      data: {
-        labels: mkeys.map(k => { const [y,m]=k.split('-'); return `${MONTH_NAMES[+m-1]} ${+y+543}`; }),
-        datasets: [{ label:'ชั่วโมง', data: mkeys.map(k=>+(mmap[k].toFixed(1))), backgroundColor:'rgba(0,149,246,0.15)', borderColor:'#0095f6', borderWidth:2, borderRadius:6, borderSkipped:false }]
-      },
-      options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} ชั่วโมง`},titleFont:CFONT,bodyFont:CFONT} }, scales:{ x:{grid:{display:false},ticks:{font:CFONT,color:'#8e8e8e',maxRotation:45}}, y:{grid:{color:'#f0f0f0'},ticks:{font:CFONT,color:'#8e8e8e'},beginAtZero:true} } }
-    });
+// ── MONTHLY CHART ────────────────────────────────────────
+function buildYearTabs(data) {
+  const years = [...new Set(data.map(r => r.date?.getFullYear()).filter(Boolean))].sort();
+  if (!years.includes(activeYear)) {
+    activeYear = years[years.length - 1] || null;
   }
+  const tabsEl = document.getElementById('yearTabs');
+  tabsEl.innerHTML = '';
+  if (years.length > 1) {
+    const btn = document.createElement('button');
+    btn.className = 'year-tab' + (activeYear === 'all' ? ' active' : '');
+    btn.textContent = 'ทุกปี';
+    btn.onclick = () => { activeYear = 'all'; buildYearTabs(data); drawMonthlyChart(data); };
+    tabsEl.appendChild(btn);
+  }
+  years.forEach(y => {
+    const btn = document.createElement('button');
+    btn.className = 'year-tab' + (activeYear === y ? ' active' : '');
+    btn.textContent = `${y+543}`;
+    btn.onclick = () => { activeYear = y; buildYearTabs(data); drawMonthlyChart(data); };
+    tabsEl.appendChild(btn);
+  });
+}
 
-  // Person hours
-  const pmap = {};
+function drawMonthlyChart(data) {
+  const subset = (activeYear === 'all' || activeYear === null)
+    ? data
+    : data.filter(r => r.date?.getFullYear() === activeYear);
+
+  // สร้างค่าครบ 12 เดือนเสมอ
+  const mmap = {};
+  for (let m = 1; m <= 12; m++) mmap[m] = 0;
+  subset.forEach(r => {
+    if (!r.date) return;
+    const m = r.date.getMonth() + 1;
+    mmap[m] += r.hours;
+  });
+
+  const labels = MONTH_NAMES; // ม.ค. – ธ.ค. ครบ 12 เดือน
+  const values = Array.from({length:12}, (_,i) => +(mmap[i+1].toFixed(1)));
+
+  // bar ที่มีข้อมูล = สีหลัก, bar ที่เป็น 0 = สีจาง
+  const bgColors = values.map(v => v > 0 ? 'rgba(0,149,246,0.18)' : 'rgba(219,219,219,0.35)');
+  const bdColors = values.map(v => v > 0 ? '#0095f6' : '#dbdbdb');
+
+  destroyChart('monthly');
+  charts.monthly = new Chart(document.getElementById('chartMonthly'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'ชั่วโมง',
+        data: values,
+        backgroundColor: bgColors,
+        borderColor: bdColors,
+        borderWidth: 2,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: items => {
+              const m    = items[0].label;
+              const yStr = (activeYear && activeYear !== 'all') ? ` ${activeYear+543}` : '';
+              return `${m}${yStr}`;
+            },
+            label: c => c.raw > 0 ? ` ${c.raw} ชั่วโมง` : ' ยังไม่มีข้อมูล'
+          },
+          titleFont: CFONT, bodyFont: CFONT
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: CFONT, color: '#8e8e8e' }
+        },
+        y: {
+          grid: { color: '#f0f0f0' },
+          ticks: { font: CFONT, color: '#8e8e8e' },
+          beginAtZero: true
+        }
+      }
+    }
+  });
+}
+
+function updateMonthlyChart(data) {
+  buildYearTabs(data);
+  drawMonthlyChart(data);
+}
+
+// ── PERSON CHART ─────────────────────────────────────────
+function updatePersonChart(data) {
+  const pmap   = {};
   data.forEach(r => { pmap[r.name] = (pmap[r.name]||0) + r.hours; });
-  const psorted = Object.entries(pmap).sort((a,b)=>b[1]-a[1]);
+  const sorted = Object.entries(pmap).sort((a,b) => b[1]-a[1]);
   destroyChart('person');
   charts.person = new Chart(document.getElementById('chartPerson'), {
-    type:'bar',
-    data:{ labels:psorted.map(e=>e[0]), datasets:[{ label:'ชั่วโมง', data:psorted.map(e=>+(e[1].toFixed(1))), backgroundColor:PALETTE.map(c=>c+'30'), borderColor:PALETTE, borderWidth:2, borderRadius:6, borderSkipped:false }] },
-    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw} ชั่วโมง`},titleFont:CFONT,bodyFont:CFONT}}, scales:{ x:{grid:{color:'#f0f0f0'},ticks:{font:CFONT,color:'#8e8e8e'},beginAtZero:true}, y:{grid:{display:false},ticks:{font:CFONT,color:'#8e8e8e'}} } }
+    type: 'bar',
+    data: {
+      labels: sorted.map(e => e[0]),
+      datasets: [{ label:'ชั่วโมง', data:sorted.map(e=>+(e[1].toFixed(1))), backgroundColor:PALETTE.map(c=>c+'30'), borderColor:PALETTE, borderWidth:2, borderRadius:6, borderSkipped:false }]
+    },
+    options: {
+      indexAxis: 'y', responsive:true, maintainAspectRatio:false,
+      plugins: { legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} ชั่วโมง`},titleFont:CFONT,bodyFont:CFONT} },
+      scales: { x:{grid:{color:'#f0f0f0'},ticks:{font:CFONT,color:'#8e8e8e'},beginAtZero:true}, y:{grid:{display:false},ticks:{font:CFONT,color:'#8e8e8e'}} }
+    }
   });
+}
 
-  // Donut count
-  const dmap = {};
+// ── DONUT CHART ──────────────────────────────────────────
+function updateDonutChart(data) {
+  const dmap   = {};
   data.forEach(r => { dmap[r.name] = (dmap[r.name]||0) + 1; });
-  const dsorted = Object.entries(dmap).sort((a,b)=>b[1]-a[1]);
+  const sorted = Object.entries(dmap).sort((a,b) => b[1]-a[1]);
   destroyChart('donut');
   charts.donut = new Chart(document.getElementById('chartDonut'), {
-    type:'doughnut',
-    data:{ labels:dsorted.map(e=>e[0]), datasets:[{ data:dsorted.map(e=>e[1]), backgroundColor:PALETTE, borderWidth:2, borderColor:'#fff', hoverOffset:6 }] },
-    options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{position:'bottom',labels:{font:CFONT,color:'#8e8e8e',boxWidth:12,padding:12}}, tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} งาน`},titleFont:CFONT,bodyFont:CFONT} } }
+    type: 'doughnut',
+    data: { labels:sorted.map(e=>e[0]), datasets:[{data:sorted.map(e=>e[1]),backgroundColor:PALETTE,borderWidth:2,borderColor:'#fff',hoverOffset:6}] },
+    options: {
+      responsive:true, maintainAspectRatio:false, cutout:'65%',
+      plugins: { legend:{position:'bottom',labels:{font:CFONT,color:'#8e8e8e',boxWidth:12,padding:12}}, tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} งาน`},titleFont:CFONT,bodyFont:CFONT} }
+    }
   });
 }
 
 function destroyChart(key) { if (charts[key]) { charts[key].destroy(); delete charts[key]; } }
+function updateCharts(data) { updateMonthlyChart(data); updatePersonChart(data); updateDonutChart(data); }
 
 // ── TABLE + PAGINATION ───────────────────────────────────
 function updateTable() {
   const total      = filteredData.length;
   const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
   if (currentPage > totalPages) currentPage = totalPages;
-
   const start    = (currentPage-1) * PER_PAGE;
   const end      = Math.min(start + PER_PAGE, total);
   const pageData = filteredData.slice(start, end);
@@ -458,20 +536,14 @@ function updateTable() {
 function renderPagination(totalPages) {
   const el = document.getElementById('pagination');
   if (totalPages <= 1) { el.innerHTML = ''; return; }
-
-  // สร้าง smart page range
   const pages = [];
   for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || (i >= currentPage-2 && i <= currentPage+2)) {
-      pages.push(i);
-    } else if (pages[pages.length-1] !== '...') {
-      pages.push('...');
-    }
+    if (i===1 || i===totalPages || (i>=currentPage-2 && i<=currentPage+2)) pages.push(i);
+    else if (pages[pages.length-1] !== '...') pages.push('...');
   }
-
   el.innerHTML = `
     <button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹ ก่อนหน้า</button>
-    ${pages.map(p => p === '...'
+    ${pages.map(p => p==='...'
       ? `<span class="page-info">…</span>`
       : `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`
     ).join('')}
@@ -488,7 +560,6 @@ function goPage(p) {
   document.querySelector('.table-card').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
-// ── UTILS ────────────────────────────────────────────────
 function setLoading(on) {
   document.getElementById('loadingOverlay').classList.toggle('show', on);
   const btn = document.getElementById('btnRefresh');
@@ -496,7 +567,6 @@ function setLoading(on) {
   btn.disabled = on;
 }
 
-// ── INIT ─────────────────────────────────────────────────
 fetchData();
 setInterval(fetchData, 5 * 60 * 1000);
 </script>
