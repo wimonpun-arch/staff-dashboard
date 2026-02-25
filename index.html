@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard · ระบบฐานข้อมูลงานที่ได้รับมอบหมาย กองกิจการนิสิต</title>
+<title>Dashboard · กองกิจการนิสิต</title>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -17,11 +17,11 @@
     --accent-light: #e8f4fd;
     --gradient: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
     --radius: 12px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Kanit', sans-serif; background: var(--bg); color: var(--text-primary); font-weight: 300; min-height: 100vh; }
 
+  /* Header */
   .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; }
   .header-logo { display: flex; align-items: center; gap: 10px; }
   .dot-bar { width: 28px; height: 20px; display: flex; flex-direction: column; gap: 4px; justify-content: center; }
@@ -29,77 +29,71 @@
   .dot-bar span:nth-child(2) { width: 70%; }
   .header h1 { font-size: 16px; font-weight: 600; letter-spacing: 0.5px; }
   .header h1 span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .header-right { font-size: 12px; color: var(--text-secondary); font-weight: 400; }
+  .header-right { font-size: 12px; color: var(--text-secondary); }
   #lastUpdated { font-weight: 500; color: var(--accent); }
 
+  /* Layout */
   .main { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
 
+  /* Filter */
   .filter-bar { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px; display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
   .filter-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 160px; }
   .filter-group label { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; }
-  .filter-group select { font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 400; border: 1px solid var(--border); border-radius: 8px; padding: 8px 28px 8px 12px; background: var(--bg); color: var(--text-primary); cursor: pointer; transition: border-color 0.2s; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238e8e8e' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; }
+  .filter-group select { font-family: 'Kanit', sans-serif; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; padding: 8px 28px 8px 12px; background: var(--bg); color: var(--text-primary); cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238e8e8e' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; transition: border-color 0.2s; }
   .filter-group select:focus { outline: none; border-color: var(--accent); }
-  .btn-refresh { font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 500; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 9px 20px; cursor: pointer; transition: opacity 0.2s, transform 0.1s; white-space: nowrap; height: 36px; align-self: flex-end; }
+  .btn-refresh { font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 500; background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 9px 20px; cursor: pointer; transition: opacity 0.2s; white-space: nowrap; height: 36px; align-self: flex-end; }
   .btn-refresh:hover { opacity: 0.88; }
-  .btn-refresh:active { transform: scale(0.97); }
   .btn-refresh:disabled { opacity: 0.6; cursor: not-allowed; }
 
+  /* Stats */
   .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
   .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
   .stat-label { font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
-  .stat-value { font-size: 26px; font-weight: 600; line-height: 1; color: var(--text-primary); }
+  .stat-value { font-size: 26px; font-weight: 600; line-height: 1; }
   .stat-value.accent { color: var(--accent); }
-  .stat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 5px; font-weight: 300; }
+  .stat-sub { font-size: 12px; color: var(--text-secondary); margin-top: 5px; }
 
+  /* Charts */
   .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
   .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px 22px 18px; }
   .chart-card.wide { grid-column: 1 / -1; }
-  .chart-title { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
-  .chart-sub { font-size: 11px; color: var(--text-secondary); font-weight: 300; margin-bottom: 16px; }
+  .chart-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .chart-sub { font-size: 11px; color: var(--text-secondary); margin-bottom: 16px; }
   .chart-wrap { position: relative; height: 240px; }
   .chart-wrap.tall { height: 300px; }
 
+  /* Table */
   .table-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 16px; }
-  .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  .table-header-left { display: flex; flex-direction: column; gap: 2px; }
   .table-wrap { overflow-x: auto; }
+
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.7px; border-bottom: 1px solid var(--border); }
-  td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; color: var(--text-primary); font-weight: 300; vertical-align: middle; }
+  th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 500; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.7px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--accent); }
+  th.sort-active { color: var(--accent); }
+  .sort-icon { margin-left: 4px; font-size: 10px; }
+  td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-weight: 300; vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: #f9f9f9; }
   .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; background: var(--accent-light); color: var(--accent); }
 
-  /* Sort */
-  th.sortable { cursor: pointer; user-select: none; }
-  th.sortable:hover { color: var(--accent); }
-  th.sortable .sort-icon { margin-left: 4px; font-size: 10px; }
-  th.sortable.asc .sort-icon::after { content: ' ▲'; color: var(--accent); }
-  th.sortable.desc .sort-icon::after { content: ' ▼'; color: var(--accent); }
-  th.sortable:not(.asc):not(.desc) .sort-icon::after { content: ' ⇅'; opacity: 0.4; }
-
   /* Pagination */
-  .pagination { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
-  .pagination button { font-family: 'Kanit', sans-serif; font-size: 13px; font-weight: 400; border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; background: var(--surface); color: var(--text-primary); cursor: pointer; transition: all 0.15s; }
-  .pagination button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-  .pagination button.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500; }
-  .pagination button:disabled { opacity: 0.35; cursor: not-allowed; }
-  .pagination-info { font-size: 12px; color: var(--text-secondary); }
+  .pagination { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 18px; flex-wrap: wrap; }
+  .page-btn { font-family: 'Kanit', sans-serif; font-size: 13px; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; background: var(--surface); color: var(--text-primary); cursor: pointer; transition: all 0.15s; min-width: 36px; text-align: center; }
+  .page-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .page-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500; }
+  .page-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .page-info { font-size: 12px; color: var(--text-secondary); padding: 0 4px; }
 
-  /* Sort buttons */
-  .sort-btn { font-family: 'Kanit', sans-serif; font-size: 12px; font-weight: 400; border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
-  .sort-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .sort-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500; }
-
-  .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(250,250,250,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; flex-direction: column; gap: 14px; }
+  /* Loading */
+  .loading-overlay { display: none; position: fixed; inset: 0; background: rgba(250,250,250,0.75); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; flex-direction: column; gap: 14px; }
   .loading-overlay.show { display: flex; }
   .spinner { width: 36px; height: 36px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text { font-size: 13px; color: var(--text-secondary); font-weight: 400; }
+  .loading-text { font-size: 13px; color: var(--text-secondary); }
   .empty-state { text-align: center; padding: 48px 20px; color: var(--text-secondary); font-size: 13px; }
-
-  .sort-btn { font-family: 'Kanit', sans-serif; font-size: 12px; font-weight: 400; border: 1px solid var(--border); border-radius: 8px; padding: 5px 12px; background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
-  .sort-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .sort-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 500; }
 
   @media (max-width: 700px) {
     .stats-row { grid-template-columns: 1fr 1fr; }
@@ -118,13 +112,14 @@
 <header class="header">
   <div class="header-logo">
     <div class="dot-bar"><span></span><span></span><span></span></div>
-    <h1><span>ระบบฐานข้อมูลงานที่ได้รับมอบหมาย กองกิจการนิสิต</span> · Analytics</h1>
+    <h1><span>กองกิจการนิสิต</span> · Analytics</h1>
   </div>
   <div class="header-right">อัพเดทล่าสุด: <span id="lastUpdated">—</span></div>
 </header>
 
 <main class="main">
 
+  <!-- Filters -->
   <div class="filter-bar">
     <div class="filter-group">
       <label>ปี (Year)</label>
@@ -136,18 +131,12 @@
       <label>เดือน (Month)</label>
       <select id="filterMonth" onchange="applyFilters()">
         <option value="all">ทุกเดือน</option>
-        <option value="1">มกราคม</option>
-        <option value="2">กุมภาพันธ์</option>
-        <option value="3">มีนาคม</option>
-        <option value="4">เมษายน</option>
-        <option value="5">พฤษภาคม</option>
-        <option value="6">มิถุนายน</option>
-        <option value="7">กรกฎาคม</option>
-        <option value="8">สิงหาคม</option>
-        <option value="9">กันยายน</option>
-        <option value="10">ตุลาคม</option>
-        <option value="11">พฤศจิกายน</option>
-        <option value="12">ธันวาคม</option>
+        <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
+        <option value="3">มีนาคม</option><option value="4">เมษายน</option>
+        <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+        <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
+        <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
+        <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
       </select>
     </div>
     <div class="filter-group">
@@ -159,6 +148,7 @@
     <button class="btn-refresh" onclick="fetchData()" id="btnRefresh">↻ รีเฟรชข้อมูล</button>
   </div>
 
+  <!-- Stats -->
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-label">จำนวนงานทั้งหมด</div>
@@ -182,6 +172,7 @@
     </div>
   </div>
 
+  <!-- Charts -->
   <div class="charts-grid">
     <div class="chart-card wide">
       <div class="chart-title">ชั่วโมงการปฏิบัติงานรายเดือน</div>
@@ -200,16 +191,12 @@
     </div>
   </div>
 
+  <!-- Table -->
   <div class="table-card">
     <div class="table-header">
-      <div>
+      <div class="table-header-left">
         <div class="chart-title">รายการงานที่ได้รับมอบหมาย</div>
         <div class="chart-sub" id="tableCount">—</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:11px;color:var(--text-secondary);font-weight:500;text-transform:uppercase;letter-spacing:0.7px;">เรียงวันที่</span>
-        <button class="sort-btn active" id="btnSortDesc" onclick="setSort('desc')">ใหม่สุด ↓</button>
-        <button class="sort-btn" id="btnSortAsc" onclick="setSort('asc')">เก่าสุด ↑</button>
       </div>
     </div>
     <div class="table-wrap">
@@ -217,7 +204,9 @@
         <thead>
           <tr>
             <th>#</th>
-            <th>วันที่</th>
+            <th class="sortable sort-active" id="thDate" onclick="toggleSort()">
+              วันที่ <span class="sort-icon" id="sortIcon">↑</span>
+            </th>
             <th>ชื่อ-สกุล</th>
             <th>รายละเอียดงาน</th>
             <th>ชั่วโมง</th>
@@ -234,85 +223,74 @@
 </main>
 
 <script>
-const SHEET_ID = '1_DzToU5iXgzwOB9WyguLJRn6rfUYaBoUJfMNsVbakp8';
+const SHEET_ID   = '1_DzToU5iXgzwOB9WyguLJRn6rfUYaBoUJfMNsVbakp8';
 const SHEET_NAME = 'การตอบแบบฟอร์ม 1';
-const API_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
-const ROWS_PER_PAGE = 10;
+const API_URL    = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}`;
+const PER_PAGE   = 10;
 
-let rawData = [];
+let rawData      = [];
 let filteredData = [];
-let currentPage = 1;
-let sortOrder = 'desc'; // 'asc' | 'desc'
-let charts = {};
+let currentPage  = 1;
+let sortDir      = 'asc'; // 'asc' = เก่า→ใหม่, 'desc' = ใหม่→เก่า
+let charts       = {};
 
 const MONTH_NAMES = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-const PALETTE = ['#0095f6','#fd1d1d','#fcb045','#833ab4','#30cfd0','#667eea','#f093fb','#4facfe','#43e97b','#fa709a'];
-const chartFont = { family: 'Kanit', size: 12, weight: '300' };
+const PALETTE     = ['#0095f6','#fd1d1d','#fcb045','#833ab4','#30cfd0','#667eea','#f093fb','#4facfe','#43e97b','#fa709a'];
+const CFONT       = { family: 'Kanit', size: 12, weight: '300' };
 
-// ── PARSE DATE ───────────────────────────────────────────
+// ── DATE PARSER ──────────────────────────────────────────
 function parseDate(raw) {
   if (!raw) return null;
-  const str = String(raw).trim();
+  const s = String(raw).trim();
 
-  // Google Sheets gviz format: Date(2024,0,15)
-  const gviz = str.match(/Date\((\d+),(\d+),(\d+)\)/);
-  if (gviz) return new Date(+gviz[1], +gviz[2], +gviz[3]);
+  // gviz: Date(2024,0,15)
+  const gv = s.match(/Date\((\d+),(\d+),(\d+)\)/);
+  if (gv) return new Date(+gv[1], +gv[2], +gv[3]);
 
-  // DD/MM/YYYY หรือ D/M/YYYY (รองรับ พ.ศ.)
-  const slash = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if (slash) {
-    let y = +slash[3];
-    if (y > 2500) y -= 543;
-    return new Date(y, +slash[2]-1, +slash[1]);
-  }
+  // DD/MM/YYYY (รองรับ พ.ศ.)
+  const sl = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (sl) { let y = +sl[3]; if (y > 2500) y -= 543; return new Date(y, +sl[2]-1, +sl[1]); }
 
   // YYYY-MM-DD
-  const iso = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (iso) {
-    let y = +iso[1];
-    if (y > 2500) y -= 543;
-    return new Date(y, +iso[2]-1, +iso[3]);
-  }
+  const is = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (is) { let y = +is[1]; if (y > 2500) y -= 543; return new Date(y, +is[2]-1, +is[3]); }
 
-  // fallback
-  const d = new Date(str);
+  const d = new Date(s);
   return isNaN(d) ? null : d;
+}
+
+function formatDateTH(date) {
+  if (!date) return '—';
+  const d = date.getDate();
+  const m = MONTH_NAMES[date.getMonth()];
+  const y = date.getFullYear() + 543;
+  return `${d} ${m} ${y}`;
 }
 
 // ── FETCH ────────────────────────────────────────────────
 async function fetchData() {
   setLoading(true);
   try {
-    const res = await fetch(API_URL + '&t=' + Date.now());
+    const res  = await fetch(API_URL + '&t=' + Date.now());
     const text = await res.text();
     const json = JSON.parse(text.replace(/^[^\(]*\(/, '').replace(/\);\s*$/, ''));
-    const rows = json.table.rows;
 
-    rawData = rows.slice(1).map(r => {
-      const c = r.c;
-
-      // Column D (index 3) — วันที่ — อาจมาเป็น object {v, f} หรือ string
-      const dateCell = c[3];
-      let dateRaw = '';
-      let dateObj = null;
-
-      if (dateCell) {
-        // gviz ส่ง date เป็น object {v: "Date(2024,0,15)", f: "15/1/2024"}
-        if (typeof dateCell.v === 'string') {
-          dateRaw = dateCell.f || dateCell.v;
-          dateObj = parseDate(dateCell.v);
-          if (!dateObj) dateObj = parseDate(dateCell.f);
-        } else if (dateCell.f) {
-          dateRaw = dateCell.f;
-          dateObj = parseDate(dateCell.f);
+    rawData = json.table.rows.slice(1).map(r => {
+      const c       = r.c;
+      const dcell   = c[3];
+      let dateRaw   = '', dateObj = null;
+      if (dcell) {
+        if (typeof dcell.v === 'string') {
+          dateObj = parseDate(dcell.v) || parseDate(dcell.f);
+          dateRaw = dcell.f || dcell.v;
+        } else if (dcell.f) {
+          dateRaw = dcell.f;
+          dateObj = parseDate(dcell.f);
         }
       }
-
-      const hoursRaw = c[5]?.v ?? c[5]?.f ?? 0;
-      const hours = parseFloat(String(hoursRaw).replace(/[^\d.]/g, '')) || 0;
-
+      const hours = parseFloat(String(c[5]?.v ?? c[5]?.f ?? 0).replace(/[^\d.]/g, '')) || 0;
       return {
-        name:    c[1]?.v || c[1]?.f || '',
+        name:    c[1]?.v || '',
         detail:  c[2]?.v || '',
         dateRaw,
         date:    dateObj,
@@ -320,13 +298,10 @@ async function fetchData() {
       };
     }).filter(r => r.name);
 
-    console.log('Loaded rows:', rawData.length);
-    console.log('Sample dates:', rawData.slice(0,3).map(r => ({ raw: r.dateRaw, parsed: r.date })));
-
     populateFilters();
     applyFilters();
     document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString('th-TH');
-  } catch (e) {
+  } catch(e) {
     console.error(e);
     alert('ไม่สามารถโหลดข้อมูลได้\nกรุณาตรวจสอบว่า Google Sheet เปิดสิทธิ์ "Anyone with the link → Viewer" แล้ว');
   } finally {
@@ -337,18 +312,18 @@ async function fetchData() {
 // ── FILTERS ─────────────────────────────────────────────
 function populateFilters() {
   const years = [...new Set(rawData.map(r => r.date?.getFullYear()).filter(Boolean))].sort();
-  const selY = document.getElementById('filterYear');
-  const curY = selY.value;
+  const selY  = document.getElementById('filterYear');
+  const curY  = selY.value;
   selY.innerHTML = '<option value="all">ทุกปี</option>';
   years.forEach(y => {
-    const o = new Option(y + 543 + ' (พ.ศ.)', y); // แสดง พ.ศ. ใน dropdown
+    const o = new Option(`${y+543} (พ.ศ.)`, y);
     if (String(y) === curY) o.selected = true;
     selY.appendChild(o);
   });
 
   const people = [...new Set(rawData.map(r => r.name).filter(Boolean))].sort();
-  const selP = document.getElementById('filterPerson');
-  const curP = selP.value;
+  const selP   = document.getElementById('filterPerson');
+  const curP   = selP.value;
   selP.innerHTML = '<option value="all">ทุกคน</option>';
   people.forEach(p => {
     const o = new Option(p, p);
@@ -363,12 +338,28 @@ function applyFilters() {
   const person = document.getElementById('filterPerson').value;
 
   filteredData = rawData.filter(r => {
-    if (year   !== 'all' && r.date?.getFullYear()    !== +year)  return false;
-    if (month  !== 'all' && r.date?.getMonth()+1     !== +month) return false;
-    if (person !== 'all' && r.name !== person)                   return false;
+    if (year   !== 'all' && r.date?.getFullYear() !== +year)    return false;
+    if (month  !== 'all' && r.date?.getMonth()+1  !== +month)   return false;
+    if (person !== 'all' && r.name !== person)                  return false;
     return true;
   });
 
+  sortData();
+}
+
+// ── SORT ─────────────────────────────────────────────────
+function toggleSort() {
+  sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  document.getElementById('sortIcon').textContent = sortDir === 'asc' ? '↑' : '↓';
+  sortData();
+}
+
+function sortData() {
+  filteredData.sort((a, b) => {
+    const ta = a.date ? a.date.getTime() : 0;
+    const tb = b.date ? b.date.getTime() : 0;
+    return sortDir === 'asc' ? ta - tb : tb - ta;
+  });
   currentPage = 1;
   updateStats(filteredData);
   updateCharts(filteredData);
@@ -378,172 +369,72 @@ function applyFilters() {
 // ── STATS ────────────────────────────────────────────────
 function updateStats(data) {
   const total  = data.length;
-  const hours  = data.reduce((s, r) => s + r.hours, 0);
-  const avg    = total ? (hours / total).toFixed(1) : 0;
-  const people = new Set(data.map(r => r.name)).size;
+  const hours  = data.reduce((s,r) => s + r.hours, 0);
   document.getElementById('statTotal').textContent  = total.toLocaleString('th-TH');
-  document.getElementById('statHours').textContent  = hours.toLocaleString('th-TH', {minimumFractionDigits:1, maximumFractionDigits:1});
-  document.getElementById('statAvg').textContent    = avg;
-  document.getElementById('statPeople').textContent = people;
+  document.getElementById('statHours').textContent  = hours.toLocaleString('th-TH', {minimumFractionDigits:1,maximumFractionDigits:1});
+  document.getElementById('statAvg').textContent    = total ? (hours/total).toFixed(1) : '0';
+  document.getElementById('statPeople').textContent = new Set(data.map(r=>r.name)).size;
 }
 
 // ── CHARTS ───────────────────────────────────────────────
 function updateCharts(data) {
-  updateMonthlyChart(data);
-  updatePersonChart(data);
-  updateDonutChart(data);
-}
-
-function updateMonthlyChart(data) {
-  // สร้าง map year-month → hours
-  const map = {};
+  // Monthly bar
+  const mmap = {};
   data.forEach(r => {
     if (!r.date) return;
-    const y = r.date.getFullYear();
-    const m = r.date.getMonth(); // 0-based
-    const key = `${y}-${String(m+1).padStart(2,'0')}`;
-    map[key] = (map[key] || 0) + r.hours;
+    const k = `${r.date.getFullYear()}-${String(r.date.getMonth()+1).padStart(2,'0')}`;
+    mmap[k] = (mmap[k]||0) + r.hours;
   });
-
-  const keys = Object.keys(map).sort();
-
-  // ถ้าไม่มีข้อมูล date ให้ลอง fallback แสดงทุก row โดยใช้ชื่อเดิม
-  if (keys.length === 0) {
-    renderMonthlyEmpty();
-    return;
+  const mkeys = Object.keys(mmap).sort();
+  destroyChart('monthly');
+  if (mkeys.length) {
+    charts.monthly = new Chart(document.getElementById('chartMonthly'), {
+      type: 'bar',
+      data: {
+        labels: mkeys.map(k => { const [y,m]=k.split('-'); return `${MONTH_NAMES[+m-1]} ${+y+543}`; }),
+        datasets: [{ label:'ชั่วโมง', data: mkeys.map(k=>+(mmap[k].toFixed(1))), backgroundColor:'rgba(0,149,246,0.15)', borderColor:'#0095f6', borderWidth:2, borderRadius:6, borderSkipped:false }]
+      },
+      options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c=>` ${c.raw} ชั่วโมง`},titleFont:CFONT,bodyFont:CFONT} }, scales:{ x:{grid:{display:false},ticks:{font:CFONT,color:'#8e8e8e',maxRotation:45}}, y:{grid:{color:'#f0f0f0'},ticks:{font:CFONT,color:'#8e8e8e'},beginAtZero:true} } }
+    });
   }
 
-  const labels = keys.map(k => {
-    const [y, m] = k.split('-');
-    return `${MONTH_NAMES[+m-1]} ${+y+543}`; // แสดง พ.ศ.
+  // Person hours
+  const pmap = {};
+  data.forEach(r => { pmap[r.name] = (pmap[r.name]||0) + r.hours; });
+  const psorted = Object.entries(pmap).sort((a,b)=>b[1]-a[1]);
+  destroyChart('person');
+  charts.person = new Chart(document.getElementById('chartPerson'), {
+    type:'bar',
+    data:{ labels:psorted.map(e=>e[0]), datasets:[{ label:'ชั่วโมง', data:psorted.map(e=>+(e[1].toFixed(1))), backgroundColor:PALETTE.map(c=>c+'30'), borderColor:PALETTE, borderWidth:2, borderRadius:6, borderSkipped:false }] },
+    options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.raw} ชั่วโมง`},titleFont:CFONT,bodyFont:CFONT}}, scales:{ x:{grid:{color:'#f0f0f0'},ticks:{font:CFONT,color:'#8e8e8e'},beginAtZero:true}, y:{grid:{display:false},ticks:{font:CFONT,color:'#8e8e8e'}} } }
   });
-  const values = keys.map(k => +(map[k].toFixed(1)));
 
-  if (charts.monthly) charts.monthly.destroy();
-  const ctx = document.getElementById('chartMonthly').getContext('2d');
-  charts.monthly = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'ชั่วโมง',
-        data: values,
-        backgroundColor: 'rgba(0,149,246,0.15)',
-        borderColor: '#0095f6',
-        borderWidth: 2,
-        borderRadius: 6,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: { label: c => ` ${c.raw} ชั่วโมง` },
-          titleFont: chartFont, bodyFont: chartFont
-        }
-      },
-      scales: {
-        x: { grid: { display: false }, ticks: { font: chartFont, color: '#8e8e8e', maxRotation: 45 } },
-        y: { grid: { color: '#f0f0f0' }, ticks: { font: chartFont, color: '#8e8e8e' }, beginAtZero: true }
-      }
-    }
+  // Donut count
+  const dmap = {};
+  data.forEach(r => { dmap[r.name] = (dmap[r.name]||0) + 1; });
+  const dsorted = Object.entries(dmap).sort((a,b)=>b[1]-a[1]);
+  destroyChart('donut');
+  charts.donut = new Chart(document.getElementById('chartDonut'), {
+    type:'doughnut',
+    data:{ labels:dsorted.map(e=>e[0]), datasets:[{ data:dsorted.map(e=>e[1]), backgroundColor:PALETTE, borderWidth:2, borderColor:'#fff', hoverOffset:6 }] },
+    options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{position:'bottom',labels:{font:CFONT,color:'#8e8e8e',boxWidth:12,padding:12}}, tooltip:{callbacks:{label:c=>` ${c.label}: ${c.raw} งาน`},titleFont:CFONT,bodyFont:CFONT} } }
   });
 }
 
-function renderMonthlyEmpty() {
-  if (charts.monthly) charts.monthly.destroy();
-  const ctx = document.getElementById('chartMonthly').getContext('2d');
-  charts.monthly = new Chart(ctx, {
-    type: 'bar',
-    data: { labels: ['ไม่พบข้อมูลวันที่'], datasets: [{ data: [0], backgroundColor: '#dbdbdb' }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-  });
-}
-
-function updatePersonChart(data) {
-  const map = {};
-  data.forEach(r => { map[r.name] = (map[r.name] || 0) + r.hours; });
-  const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]);
-
-  if (charts.person) charts.person.destroy();
-  const ctx = document.getElementById('chartPerson').getContext('2d');
-  charts.person = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: sorted.map(e => e[0]),
-      datasets: [{
-        label: 'ชั่วโมง',
-        data: sorted.map(e => +(e[1].toFixed(1))),
-        backgroundColor: PALETTE.map(c => c + '30'),
-        borderColor: PALETTE,
-        borderWidth: 2,
-        borderRadius: 6,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: c => ` ${c.raw} ชั่วโมง` }, titleFont: chartFont, bodyFont: chartFont }
-      },
-      scales: {
-        x: { grid: { color: '#f0f0f0' }, ticks: { font: chartFont, color: '#8e8e8e' }, beginAtZero: true },
-        y: { grid: { display: false }, ticks: { font: chartFont, color: '#8e8e8e' } }
-      }
-    }
-  });
-}
-
-function updateDonutChart(data) {
-  const map = {};
-  data.forEach(r => { map[r.name] = (map[r.name] || 0) + 1; });
-  const sorted = Object.entries(map).sort((a,b) => b[1]-a[1]);
-
-  if (charts.donut) charts.donut.destroy();
-  const ctx = document.getElementById('chartDonut').getContext('2d');
-  charts.donut = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: sorted.map(e => e[0]),
-      datasets: [{ data: sorted.map(e => e[1]), backgroundColor: PALETTE, borderWidth: 2, borderColor: '#fff', hoverOffset: 6 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { font: chartFont, color: '#8e8e8e', boxWidth: 12, padding: 12 } },
-        tooltip: { callbacks: { label: c => ` ${c.label}: ${c.raw} งาน` }, titleFont: chartFont, bodyFont: chartFont }
-      },
-      cutout: '65%'
-    }
-  });
-}
-
-// ── SORT ─────────────────────────────────────────────────
-function setSort(order) {
-  sortOrder = order;
-  document.getElementById('btnSortDesc').classList.toggle('active', order === 'desc');
-  document.getElementById('btnSortAsc').classList.toggle('active', order === 'asc');
-  currentPage = 1;
-  updateTable();
-}
+function destroyChart(key) { if (charts[key]) { charts[key].destroy(); delete charts[key]; } }
 
 // ── TABLE + PAGINATION ───────────────────────────────────
 function updateTable() {
   const total      = filteredData.length;
-  const totalPages = Math.max(1, Math.ceil(total / ROWS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
   if (currentPage > totalPages) currentPage = totalPages;
 
-  const start = (currentPage - 1) * ROWS_PER_PAGE;
-  const end   = Math.min(start + ROWS_PER_PAGE, total);
+  const start    = (currentPage-1) * PER_PAGE;
+  const end      = Math.min(start + PER_PAGE, total);
   const pageData = filteredData.slice(start, end);
 
   document.getElementById('tableCount').textContent =
-    `แสดง ${start+1}–${end} จากทั้งหมด ${total} รายการ`;
+    total ? `แสดง ${start+1}–${end} จากทั้งหมด ${total} รายการ` : 'ไม่พบข้อมูล';
 
   const tbody = document.getElementById('tableBody');
   if (!total) {
@@ -554,10 +445,10 @@ function updateTable() {
 
   tbody.innerHTML = pageData.map((r, i) => `
     <tr>
-      <td style="color:var(--text-secondary)">${start + i + 1}</td>
-      <td style="font-weight:500">${r.name}</td>
+      <td style="color:var(--text-secondary);white-space:nowrap">${start+i+1}</td>
+      <td style="white-space:nowrap;color:var(--text-secondary)">${formatDateTH(r.date)}</td>
+      <td style="font-weight:500;white-space:nowrap">${r.name}</td>
       <td>${r.detail || '—'}</td>
-      <td style="white-space:nowrap;color:var(--text-secondary)">${r.dateRaw || '—'}</td>
       <td><span class="badge">${r.hours} ชม.</span></td>
     </tr>`).join('');
 
@@ -568,8 +459,8 @@ function renderPagination(totalPages) {
   const el = document.getElementById('pagination');
   if (totalPages <= 1) { el.innerHTML = ''; return; }
 
-  // สร้าง page numbers แบบ smart (แสดงแค่ไม่กี่หน้าแวดล้อม)
-  let pages = [];
+  // สร้าง smart page range
+  const pages = [];
   for (let i = 1; i <= totalPages; i++) {
     if (i === 1 || i === totalPages || (i >= currentPage-2 && i <= currentPage+2)) {
       pages.push(i);
@@ -579,22 +470,22 @@ function renderPagination(totalPages) {
   }
 
   el.innerHTML = `
-    <button onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹ ก่อนหน้า</button>
+    <button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹ ก่อนหน้า</button>
     ${pages.map(p => p === '...'
-      ? `<span class="pagination-info">...</span>`
-      : `<button class="${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`
+      ? `<span class="page-info">…</span>`
+      : `<button class="page-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`
     ).join('')}
-    <button onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>ถัดไป ›</button>
-    <span class="pagination-info">หน้า ${currentPage} / ${totalPages}</span>
+    <button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>ถัดไป ›</button>
+    <span class="page-info">หน้า ${currentPage} / ${totalPages}</span>
   `;
 }
 
 function goPage(p) {
-  const totalPages = Math.ceil(filteredData.length / ROWS_PER_PAGE);
+  const totalPages = Math.ceil(filteredData.length / PER_PAGE);
   if (p < 1 || p > totalPages) return;
   currentPage = p;
   updateTable();
-  document.querySelector('.table-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelector('.table-card').scrollIntoView({ behavior:'smooth', block:'start' });
 }
 
 // ── UTILS ────────────────────────────────────────────────
